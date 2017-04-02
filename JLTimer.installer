@@ -1,1 +1,4 @@
-cp JLTimer /usr/bin/timer
+cp JLTimer /usr/bin/JLTimer
+cp settings /usr/share/JLTimer/settings
+cp license /usr/share/JLTimer/license
+cp README.md /usr/share/JLTimer/README.md

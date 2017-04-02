@@ -1,7 +1,7 @@
 #!/bin/bash
 export dir="/root/JLTimer/timer"
-bannerPrompt=$(cat settings | grep "bannerPrompt")
-showBanner=$(cat settings | grep "showBanner")
+bannerPrompt=$(cat settings | grep "bannerPrompt" | grep -E -o "=.{0,5}" | tr --delete "=")
+showBanner=$(cat settings | grep "showBanner" | grep -E -o "=.{0,5}" | tr --delete "=")
 
 currentLine () {
 	echo -en "\E[6n"
@@ -22,17 +22,17 @@ showBannerPrompt () {
 		y) 
 			echo "bannerPrompt=false" >> settings
 			echo "showBanner=true" >> settings
-			echo 'Your answer is saved. You can change this with "timer -b or -banner"';;
+			echo 'Your answer is saved. You can change this with "timer -b".';;
 		n)
 			echo "bannerPrompt=false" >> settings
 			echo "showBanner=false" >> settings
-			echo 'Your answer is saved. You can change this with "timer -b or -banner"';;
+			echo 'Your answer is saved. You can change this with "timer -b".';;
 		*) 
 			echo "invalid input. You have to enter y or n."
 			exit 1;;
 	esac
 }
-if [ $showBanner != "false"]; then
+if [[ $showBanner != "false" ]]; then
 	echo "     ██╗██╗  ████████╗██╗███╗   ███╗███████╗██████╗ "
 	echo "     ██║██║  ╚══██╔══╝██║████╗ ████║██╔════╝██╔══██╗"
 	echo "     ██║██║     ██║   ██║██╔████╔██║█████╗  ██████╔╝"
@@ -40,7 +40,7 @@ if [ $showBanner != "false"]; then
 	echo "╚█████╔╝███████╗██║   ██║██║ ╚═╝ ██║███████╗██║  ██║"
 	echo " ╚════╝ ╚══════╝╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝"
 fi
-if [ -z $showBannerPrompt ]; then
+if [[ $bannerPrompt != "false" ]]; then
 	showBannerPrompt 
 fi
 if [ -z $1 ]; then
@@ -51,7 +51,7 @@ if [ -z $1 ]; then
 else
 	userInputTime=$1
 fi
-showTime=$userInputTime
+showTime="$userInputTime"
 tput bold
 echo "Timer:"
 currentLine #function
@@ -76,7 +76,7 @@ while true; do
 	echo -ne "BEEP"
 	sleep 0.2
 done
-tput setaf 7
+tput setaf 7 #white
 tput sgr0
 echo " "
 exit
