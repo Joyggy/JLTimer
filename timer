@@ -1,0 +1,72 @@
+#!/bin/bash
+lines=$(tput lines)
+cols=$(tput cols)
+
+currentLine () {
+	echo -en "\E[6n"
+	read -sdR CURPOS
+	CURPOS=${CURPOS#*[}
+	curLine=$(echo $CURPOS | grep -E -o ".{0,100};.{0,0}" | tr ";" " ")
+	export curLine
+}
+
+echo "     ██╗██╗  ████████╗██╗███╗   ███╗███████╗██████╗ "
+echo "     ██║██║  ╚══██╔══╝██║████╗ ████║██╔════╝██╔══██╗"
+echo "     ██║██║     ██║   ██║██╔████╔██║█████╗  ██████╔╝"
+echo "██   ██║██║     ██║   ██║██║╚██╔╝██║██╔══╝  ██╔══██╗"
+echo "╚█████╔╝███████╗██║   ██║██║ ╚═╝ ██║███████╗██║  ██║"
+echo " ╚════╝ ╚══════╝╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝"
+
+# if [ ! $showTextQuestion = "false" ]; then
+# 	tput bold
+# 	echo "Do you want to see that banner every time you use JLTimer?"
+# 	echo "y/yes or n/no"
+# 	tput sgr0
+# 	read -r showTextPromtYorN
+# 	case $showTextPromtYorN in
+# 		y|yes) 
+# 			echo "Your answer is saved." 
+# 			echo "showText=true" >> timer ;;
+# 		n|no) 
+# 			echo "You will not see the banner again."; 
+# 			echo "showText=false" >> timer ;;
+# 	esac
+# 	echo "showTextQuestion=false" >> timer 
+# fi
+tput bold
+if [ -z $1 ]; then
+	echo "How many seconds should the timer run?"
+	tput sgr0
+	read -r userInputTime
+else
+	userInputTime=$1
+fi
+showTime=$userInputTime
+tput bold
+echo "Timer:"
+currentLine #function
+for (( $showTime; $userInputTime >= $showTime; showTime-- )); do
+	tput cup $(($curLine - 1)) 0
+	echo -ne "\033[K$showTime"
+	if [ $showTime == 0 ]; then
+		break
+	fi
+	sleep 1
+done
+trap "break" SIGINT
+currentLine #function
+while true; do
+	tput bold
+	tput setaf 4 #blue
+	tput cup $curLine 0
+	echo -ne "BEEP"
+	sleep 0.2
+	tput setaf 1 #red
+	tput cup $curLine 0
+	echo -ne "BEEP"
+	sleep 0.2
+done
+tput setaf 7
+tput sgr0
+echo " "
+exit
