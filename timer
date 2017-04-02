@@ -1,6 +1,5 @@
 #!/bin/bash
-lines=$(tput lines)
-cols=$(tput cols)
+export dir="/root/JLTimer/timer"
 
 currentLine () {
 	echo -en "\E[6n"
@@ -10,31 +9,35 @@ currentLine () {
 	export curLine
 }
 
+showBannerPrompt () {
+	tput bold
+	echo "Do you want to see the banner every time you start this programm?"
+	echo "Y/yes or N/no"
+	read -r showBannerYorN
+	case "$showBannerYorN" in
+		[Yy][Yes][yes]) 
+			echo "showBannerPrompt=false" >> settings
+			echo 'Your answer is saved. You can change this with "timer -b or -banner"';;
+		[Nn][No][no])
+			echo "showBannerPrompt=false" >> settings
+			echo "dontShowBanner=true" >> settings
+			echo 'Your answer is saved. You can change this with "timer -b or -banner"';;
+		*) 
+			echo "You have to enter Yes/y or No/no.";;
+	esac
+}
+
 echo "     ██╗██╗  ████████╗██╗███╗   ███╗███████╗██████╗ "
 echo "     ██║██║  ╚══██╔══╝██║████╗ ████║██╔════╝██╔══██╗"
 echo "     ██║██║     ██║   ██║██╔████╔██║█████╗  ██████╔╝"
 echo "██   ██║██║     ██║   ██║██║╚██╔╝██║██╔══╝  ██╔══██╗"
 echo "╚█████╔╝███████╗██║   ██║██║ ╚═╝ ██║███████╗██║  ██║"
 echo " ╚════╝ ╚══════╝╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝"
-
-# if [ ! $showTextQuestion = "false" ]; then
-# 	tput bold
-# 	echo "Do you want to see that banner every time you use JLTimer?"
-# 	echo "y/yes or n/no"
-# 	tput sgr0
-# 	read -r showTextPromtYorN
-# 	case $showTextPromtYorN in
-# 		y|yes) 
-# 			echo "Your answer is saved." 
-# 			echo "showText=true" >> timer ;;
-# 		n|no) 
-# 			echo "You will not see the banner again."; 
-# 			echo "showText=false" >> timer ;;
-# 	esac
-# 	echo "showTextQuestion=false" >> timer 
-# fi
-tput bold
+if [ -z $showBannerPrompt ]; then
+	showBannerPrompt 
+fi
 if [ -z $1 ]; then
+	tput bold
 	echo "How many seconds should the timer run?"
 	tput sgr0
 	read -r userInputTime
