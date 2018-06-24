@@ -1,1 +1,1 @@
-cp JLTimer /usr/bin/timer
+cp timer /usr/bin/timer
